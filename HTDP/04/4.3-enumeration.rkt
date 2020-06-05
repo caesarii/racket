@@ -48,7 +48,8 @@
 
 (define (draw-position x)
   (place-image 
-    (draw-red-dot) 
+    (draw-red-dot)
+    x
     100 
     (empty-scene 300 300)))
 
@@ -57,7 +58,7 @@
     [(string=? "left" k) (- p 5)]
     [(string=? "right" k) (+ p 5)]
     [else p]))
-    
+
 (big-bang POSITION 
   [to-draw draw-position]
   [on-key keh]
