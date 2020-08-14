@@ -2,7 +2,7 @@ const { NodeType } = require('./constance')
 const { parser } = require('./parser')
 const { scanner } = require('./scanner')
 
-const log = console.log 
+let log = () => {}
 
 const compiler = ast => {
   let currNode = ast
@@ -22,22 +22,25 @@ const compiler = ast => {
       } else if (operator.nodeType === NodeType.division) {
         return compiler(operand1) / compiler(operand2)
       } else {
-        console.log('Unknown Operation')
+        log('Unknown Operation')
       }
     }
   } else if (currNode.nodeType === NodeType.number) {
-    return Number(currNode.value)
+    return currNode.value
   } else {
-    console.log('Unknown Node', currNode)
+    log('Unknown Node', currNode)
   }
 }
 
 function test () {
-  const str1 = `(+ (- 3 1) (* 2 2))`
+
+  log = console.log
+
+  const str1 = `(+ (- 3 1) (* 2 2))` // 6
 
   log(compiler(parser(scanner(str1))))
 
-  const str2 = `(+ (- 10 8) (* (- 3 2) 2))`
+  const str2 = `(+ (- 10 8) (* (- 3 2) 2))` // 4
 
   log(compiler(parser(scanner(str2))))
 }

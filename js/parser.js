@@ -2,7 +2,7 @@
 const { NodeType, TokenType } = require('./constance')
 const { scanner } = require('./scanner')
 
-const log = console.log;
+let log = () => {}
 
 function Node (type, value, parent) {
   this.nodeType = type
@@ -19,7 +19,7 @@ const parser = (tokenList) => {
     const token = tokenList[i]
 
     if (token.tokenType === TokenType.leftBracket) {
-      const exprNode = new Node(NodeType.expression, 'expressoin', currNode)
+      const exprNode = new Node(NodeType.expression, 'expression', currNode)
       currNode.children.push(exprNode)
       currNode = exprNode
     } else if ([TokenType.add, TokenType.substract, TokenType.multiple, TokenType.division].includes(token.tokenType)) {
@@ -33,30 +33,23 @@ const parser = (tokenList) => {
     }
   }
 
-  // log('ast', rootNode.children[0].children[2])
+  log(rootNode)
+
   return rootNode
 }
 
 const test = () => {
 
-  const addStr =  '(+ 11 22)'
 
-  const substract = '(- 21 11)'
+  const logTree = (tree) => {
+    console.log(tree)
+    console.log()
+    tree.children.map(child => logTree(child))
+  }
 
-  const multiple = '(* 22 2)'
-
-  const division = '(/ 42 2)'
+  log = logTree
 
   const str1 = `(+ (- 3 1) (* 2 2))`
-
-
-  // parser(scanner(addStr))
-
-  // parser(scanner(substract))
-
-  // parser(scanner(multiple))
-
-  // parser(scanner(division))
 
   parser(scanner(str1))
 }
