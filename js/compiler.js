@@ -2,7 +2,7 @@ const { NodeType } = require('./constance')
 const { parser } = require('./parser')
 const { scanner } = require('./scanner')
 
-const log = console.log 
+let log = () => {}
 
 const compiler = ast => {
   let currNode = ast
@@ -14,32 +14,43 @@ const compiler = ast => {
     for(let i = 0; i < currNode.children.length; i++) {
       const [operator, operand1, operand2] = currNode.children;
       if (operator.nodeType === NodeType.add) {
-        return compiler(operand1) + compiler(operand2)
+        return operand1.value + operand2.value
       } else if (operator.nodeType === NodeType.substract) {
-        return compiler(operand1) - compiler(operand2)
+        return operand1.value - operand2.value
       } else if (operator.nodeType === NodeType.multiple) {
-        return compiler(operand1) * compiler(operand2)
+        return operand1.value * operand2.value
       } else if (operator.nodeType === NodeType.division) {
-        return compiler(operand1) / compiler(operand2)
+        return operand1.value / operand2.value
       } else {
-        console.log('Unknown Operation')
+        log('Unknown Operation')
       }
     }
   } else if (currNode.nodeType === NodeType.number) {
     return Number(currNode.value)
   } else {
-    console.log('Unknown Node', currNode)
+    log('Unknown Node', currNode)
   }
 }
 
 function test () {
-  const str1 = `(+ (- 3 1) (* 2 2))`
 
-  log(compiler(parser(scanner(str1))))
+  log = console.log
 
-  const str2 = `(+ (- 10 8) (* (- 3 2) 2))`
+  const addStr =  '(+ 11 22)'
 
-  log(compiler(parser(scanner(str2))))
+  const substract = '(- 21 11)'
+
+  const multiple = '(* 22 2)'
+
+  const division = '(/ 42 2)'
+
+  log(compiler(parser(scanner(addStr))))
+
+  log(compiler(parser(scanner(substract))))
+
+  log(compiler(parser(scanner(multiple))))
+
+  log(compiler(parser(scanner(division))))
 }
 
 if (require.main === module) {

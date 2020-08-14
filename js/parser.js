@@ -2,7 +2,7 @@
 const { NodeType, TokenType } = require('./constance')
 const { scanner } = require('./scanner')
 
-const log = console.log;
+let log = () => {}
 
 function Node (type, value, parent) {
   this.nodeType = type
@@ -19,7 +19,7 @@ const parser = (tokenList) => {
     const token = tokenList[i]
 
     if (token.tokenType === TokenType.leftBracket) {
-      const exprNode = new Node(NodeType.expression, 'expressoin', currNode)
+      const exprNode = new Node(NodeType.expression, 'expression', currNode)
       currNode.children.push(exprNode)
       currNode = exprNode
     } else if ([TokenType.add, TokenType.substract, TokenType.multiple, TokenType.division].includes(token.tokenType)) {
@@ -33,11 +33,33 @@ const parser = (tokenList) => {
     }
   }
 
-  // log('ast', rootNode.children[0].children[2])
+  log(rootNode)
   return rootNode
 }
 
 const test = () => {
+
+  const treeStringify = tree => {
+    if (!tree instanceof Node) {
+      return tree
+    }
+    return{
+      ...tree,
+      parent: tree.parent && tree.parent.toString(),
+      children: tree.children.map(child => treeStringify(child))
+    }
+  }
+
+  const logTree = (tree) => {
+    if (!tree instanceof Node) {
+      return console.log(tree)
+    }
+    console.log(tree)
+    console.log()
+    tree.children.map(child => logTree(child))
+  }
+
+  log = logTree
 
   const addStr =  '(+ 11 22)'
 
@@ -47,10 +69,7 @@ const test = () => {
 
   const division = '(/ 42 2)'
 
-  const str1 = `(+ (- 3 1) (* 2 2))`
-
-
-  // parser(scanner(addStr))
+  parser(scanner(addStr))
 
   // parser(scanner(substract))
 
@@ -58,7 +77,6 @@ const test = () => {
 
   // parser(scanner(division))
 
-  parser(scanner(str1))
 }
 
 if(require.main === module) {

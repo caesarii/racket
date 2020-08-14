@@ -1,6 +1,6 @@
 const { TokenType, Keyword} = require('./constance')
 
-const log = console.log;
+let log = () => {}
 
 const isNumber = (char) => {
   return ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(char)
@@ -49,7 +49,7 @@ const scanner = (source) => {
       i++
     } else if (isNumber(char)) {
       const num = numberToken(source, i)
-      tokenList.push(new Token(TokenType.number, num, num.valueOf()))
+      tokenList.push(new Token(TokenType.number, num, Number(num)))
       i += num.length
     } else {
       // log('unhandle Token')
@@ -57,43 +57,43 @@ const scanner = (source) => {
     }
   }
 
-
-  // log('token list', tokenList)
+  log('token list', tokenList)
   return tokenList;
 }
 
 const test = () => {
+  log = (...args) =>{
+    args.forEach(arg => {
+      console.log(arg);
+      console.log('\r\n')
+    })
+  }
+
 
   function testNumberToken () {
     const str = 'abc123sdf'
     log(numberToken(str,3))
   }
+
   testNumberToken();
 
-  const testScanner = () => {
+  const addStr =  '(+ 11 22)'
 
-    const addStr =  '(+ 11 22)'
+  const substract = '(- 21 11)'
 
-    const substract = '(- 21 11)'
-  
-    const multiple = '(* 22 2)'
-  
-    const division = '(/ 42 2)'
-  
-    const str1 = `(+ (- 3 1) (* 2 2))`
+  const multiple = '(* 22 2)'
 
-    scanner(addStr)
+  const division = '(/ 42 2)'
 
-    scanner(substract)
 
-    scanner(multiple)
+  scanner(addStr)
 
-    scanner(division)
+  scanner(substract)
 
-    scanner(str1)
+  scanner(multiple)
 
-  }
-  testScanner()
+  scanner(division)
+
 }
 
 if (require.main === module) {
